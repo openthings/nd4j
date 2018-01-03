@@ -1619,7 +1619,7 @@ public class NativeOpExecutioner extends DefaultOpExecutioner {
         val inputArgs = op.inputArguments();
         int cnt= 0;
         for (val in: inputArgs) {
-            inputBuffers.put(cnt++, in.data().addressPointer());
+            inputBuffers.put(cnt, in.data().addressPointer());
             inputShapes.put(cnt++, in.shapeInfoDataBuffer().addressPointer());
         }
 
