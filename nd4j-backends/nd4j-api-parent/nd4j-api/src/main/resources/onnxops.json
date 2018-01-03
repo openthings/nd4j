@@ -1393,7 +1393,7 @@
             "kernel_shape" : "AttrType.INTS",
             "auto_pad" : "AttrType.STRING"
          },
-         "name" : "AveragePool",
+            "name" : "AveragePool",
          "outputs" : [
             {
                "name" : "Y",

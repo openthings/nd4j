@@ -9,6 +9,7 @@ import lombok.val;
 import onnx.OnnxProto3;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
+import org.nd4j.imports.descriptors.properties.PropertyMapping;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.Op;
 import org.nd4j.linalg.exception.ND4JIllegalStateException;
@@ -86,6 +87,25 @@ public abstract class DifferentialFunction {
         this.sameDiff = sameDiff;
         setInstanceId();
         initFromOnnx(node, sameDiff, attributesForNode, graph);
+    }
+
+
+    /**
+     * Returns the mappings for a given function (
+     * for tensorflow and onnx import mapping properties
+     * of this function). The mapping is indexed by field name.
+     * If the function has no properties, this returned map
+     * will be empty.
+     *
+     * Note that some functions have multiple names.
+     * This function returns a map indexed by each
+     * alias it has for a given name.
+     * These names include both onnx and tensorflow names (which might be 1 or more)
+     *
+     * @return
+     */
+    public Map<String,Map<String,PropertyMapping>> mappingsForFunction() {
+        return Collections.emptyMap();
     }
 
     /**
