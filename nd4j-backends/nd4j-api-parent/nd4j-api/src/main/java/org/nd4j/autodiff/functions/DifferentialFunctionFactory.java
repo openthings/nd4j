@@ -959,7 +959,6 @@ public class DifferentialFunctionFactory   {
         return new ScalarEquals(sameDiff(),iX,i_y).outputVariables()[0];
     }
 
-
     public SDVariable eqi(SDVariable iX, double i_y) {
         return new ScalarEquals(sameDiff(),iX,i_y,true).outputVariables()[0];
     }
@@ -1044,9 +1043,6 @@ public class DifferentialFunctionFactory   {
         validateDifferentialFunctionsameDiff(func);
         validateDifferentialFunctionsameDiff(input);
         return tile(func,input.getShape());
-
-
-
     }
 
 
