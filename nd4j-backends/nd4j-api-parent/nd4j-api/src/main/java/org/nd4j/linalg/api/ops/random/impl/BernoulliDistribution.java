@@ -60,6 +60,8 @@ public class BernoulliDistribution extends BaseRandomOp {
         return ret;
     }
 
+
+
     @Override
     public int opNum() {
         return 7;

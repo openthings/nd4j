@@ -24,6 +24,7 @@ import lombok.val;
 import onnx.OnnxProto3;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
+import org.nd4j.imports.descriptors.properties.PropertyMapping;
 import org.nd4j.imports.graphmapper.onnx.OnnxGraphMapper;
 import org.nd4j.imports.graphmapper.tf.TFGraphMapper;
 import org.nd4j.linalg.api.ops.DynamicCustomOp;
@@ -133,6 +134,28 @@ public class Reshape extends DynamicCustomOp {
         this.shape = shape;
 
     }
+
+
+
+    @Override
+    public Map<String, Map<String, PropertyMapping>> mappingsForFunction() {
+        Map<String,Map<String,PropertyMapping>> ret = new HashMap<>();
+        Map<String,PropertyMapping> map = new HashMap<>();
+
+        val shapeMapping = PropertyMapping.builder()
+                .onnxAttrName("shape")
+                .tfInputPosition(-1)
+                .propertyNames(new String[]{"shape"})
+                .build();
+
+        map.put("shape",shapeMapping);
+
+        ret.put(tensorflowName(),map);
+        ret.put(onnxName(),map);
+
+        return ret;
+    }
+
 
     @Override
     public List<int[]> calculateOutputShape() {

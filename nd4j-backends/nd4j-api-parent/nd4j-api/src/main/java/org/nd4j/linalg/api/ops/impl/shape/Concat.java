@@ -5,6 +5,7 @@ import lombok.val;
 import onnx.OnnxProto3;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.imports.NoOpNameFoundException;
+import org.nd4j.imports.descriptors.properties.PropertyMapping;
 import org.nd4j.linalg.api.ops.DynamicCustomOp;
 import org.nd4j.linalg.api.ops.Op;
 import org.nd4j.linalg.exception.ND4JIllegalStateException;
@@ -12,6 +13,7 @@ import org.tensorflow.framework.AttrValue;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.framework.NodeDef;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,20 +29,20 @@ public class Concat extends DynamicCustomOp {
 
     @Override
     public void resolvePropertiesFromSameDiffBeforeExecution() {
-          val propertiesToResolve = sameDiff.propertiesToResolveForFunction(this);
-          if(!propertiesToResolve.isEmpty()) {
-              val varName = propertiesToResolve.get(0);
-              val var = sameDiff.getVariable(varName);
-              if(var == null) {
-                  throw new ND4JIllegalStateException("No variable found with name " +varName);
-              }
-              else if(var.getArr() == null) {
-                  throw new ND4JIllegalStateException("Array with variable name " + varName + " unset!");
-              }
+        val propertiesToResolve = sameDiff.propertiesToResolveForFunction(this);
+        if(!propertiesToResolve.isEmpty()) {
+            val varName = propertiesToResolve.get(0);
+            val var = sameDiff.getVariable(varName);
+            if(var == null) {
+                throw new ND4JIllegalStateException("No variable found with name " +varName);
+            }
+            else if(var.getArr() == null) {
+                throw new ND4JIllegalStateException("Array with variable name " + varName + " unset!");
+            }
 
-              concatDimension = var.getArr().getInt(0);
-              addIArgument(concatDimension);
-          }
+            concatDimension = var.getArr().getInt(0);
+            addIArgument(concatDimension);
+        }
 
         //don't pass both iArg and last axis down to libnd4j
         if(inputArguments().length == args().length) {
@@ -69,6 +71,34 @@ public class Concat extends DynamicCustomOp {
         if(descriptor.getNumTArgs() >= 0 && numTArguments() != descriptor.getNumTArgs())
             throw new ND4JIllegalStateException("Op failure for " + opName() + " Number of inputs is invalid for execution. Specified " + numTArguments() + " but should be " + descriptor.getNumTArgs());
 
+    }
+
+    @Override
+    public Map<String, Map<String, PropertyMapping>> mappingsForFunction() {
+        Map<String, Map<String, PropertyMapping>> ret = new HashMap<>();
+
+        Map<String,PropertyMapping> concatMap = new HashMap<>();
+        val concatDimProps = PropertyMapping.builder()
+                .tfInputPosition(0)
+                .onnxAttrName("axis")
+                .build();
+        concatMap.put("concatDimension",concatDimProps);
+
+
+        Map<String,PropertyMapping> concatV2Map = new HashMap<>();
+        val concat2DimProps = PropertyMapping.builder()
+                //lalst position
+                .tfInputPosition(-1)
+                .onnxAttrName("axis")
+                .build();
+        concatV2Map.put("concatDimension",concat2DimProps);
+
+        //note that onnx is already covered here
+        ret.put(tensorflowNames()[0],concatMap);
+        ret.put(tensorflowNames()[1],concatV2Map);
+
+
+        return ret;
     }
 
     @Override

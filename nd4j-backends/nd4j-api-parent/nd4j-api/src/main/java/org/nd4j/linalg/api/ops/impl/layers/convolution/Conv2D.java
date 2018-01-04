@@ -216,7 +216,7 @@ public class Conv2D extends DynamicCustomOp {
         map.put("dw", dilationMapping);
         map.put("dh", dilationMapping);
         map.put("isSameMode",sameMode);
-        map.put("ph", kernelMapping);
+        map.put("ph", paddingWidthHeight);
         map.put("pw", paddingWidthHeight);
 
         ret.put(onnxName(),map);

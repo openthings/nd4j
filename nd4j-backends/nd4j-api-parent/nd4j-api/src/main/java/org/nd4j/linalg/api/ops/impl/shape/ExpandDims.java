@@ -23,6 +23,7 @@ import lombok.val;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.imports.NoOpNameFoundException;
+import org.nd4j.imports.descriptors.properties.PropertyMapping;
 import org.nd4j.imports.graphmapper.tf.TFGraphMapper;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.DynamicCustomOp;
@@ -31,10 +32,7 @@ import org.tensorflow.framework.AttrValue;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.framework.NodeDef;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ExpandDims function
@@ -88,6 +86,19 @@ public class ExpandDims extends DynamicCustomOp {
         return ret;
     }
 
+    @Override
+    public Map<String, Map<String, PropertyMapping>> mappingsForFunction() {
+            Map<String, Map<String, PropertyMapping>> ret = new HashMap<>();
+            val axisMapping = PropertyMapping.builder()
+                    .tfInputPosition(1)
+                    .propertyNames(new String[]{"axis"})
+                    .build();
+            Map<String,PropertyMapping> map = new HashMap<>();
+            map.put("axis",axisMapping);
+
+            ret.put(tensorflowName(),map);
+            return ret;
+    }
 
     @Override
     public void assertValidForExecution() {

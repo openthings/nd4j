@@ -11,6 +11,7 @@ import java.util.Map;
 public class DeConv2DConfig {
     private int kY,kX,sY,sX,pY,pX,dY,dX;
     private boolean isSameMode;
+    @Builder.Default private boolean isNHWC = false;
 
 
     public Map<String,Object> toProperties() {
@@ -24,6 +25,7 @@ public class DeConv2DConfig {
         ret.put("dY",dY);
         ret.put("dX",dX);
         ret.put("isSameMode",isSameMode);
+        ret.put("isNWHC",isNHWC);
         return ret;
     }
 }

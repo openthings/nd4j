@@ -89,6 +89,6 @@ public class Mean extends Sum {
 
     @Override
     public String tensorflowName() {
-        return "reduce_mean";
+        return "Mean";
     }
 }
